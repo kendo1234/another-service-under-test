@@ -1,0 +1,47 @@
+plugins {
+	id 'org.springframework.boot' version '2.3.0.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+	id 'java'
+}
+
+group = 'com.service-under-test'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	testImplementation 'io.rest-assured:spring-mock-mvc:3.3.0'
+	testImplementation 'io.rest-assured:rest-assured:3.3.0'
+	testImplementation 'io.rest-assured:json-path:3.3.0'
+	testImplementation 'io.rest-assured:xml-path:3.3.0'
+	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
+}
+
+test {
+	useJUnitPlatform {
+		excludeTags 'acceptanceTest'
+	}
+}
+
+task acceptanceTest(type: Test) {
+	systemProperty "acceptanceTest.scheme", project.getProperty("acceptanceTest.scheme")
+	systemProperty "acceptanceTest.url", project.getProperty("acceptanceTest.url")
+	systemProperty "acceptanceTest.port", project.getProperty("acceptanceTest.port")
+	useJUnitPlatform {
+		includeTags 'acceptanceTest'
+	}
+}
+
